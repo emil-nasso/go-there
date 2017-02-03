@@ -1,0 +1,22 @@
+{
+   "app":{
+      "port":8000,
+      "debug":true
+   },
+   "static-rules":[
+      {
+         "from":"/g",
+         "to":"http://www.google.com"
+      },
+      {
+         "from":"/af",
+         "to":"http://www.aftonbladet.se"
+      }
+   ],
+   "replace-rules":[
+      {
+         "pattern":"/g/{query}",
+         "target":"http://www.google.com?query={query}"
+      }
+   ]
+}

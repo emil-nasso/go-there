@@ -10,9 +10,9 @@ func TestStaticRoutes(t *testing.T) {
 	assert := assert.New(t)
 
 	server := rewriteServer{
-		rules: []rewriter{
-			staticRule{from: "/hello", to: "/world"},
-			staticRule{from: "/tjenna", to: "/mannen"},
+		rewriters: []rewriter{
+			staticRule{From: "/hello", To: "/world"},
+			staticRule{From: "/tjenna", To: "/mannen"},
 		},
 	}
 

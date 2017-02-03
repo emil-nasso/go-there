@@ -1,14 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 type replaceRule struct {
-	regexp *regexp.Regexp
-	target string
-	parts  []string
+	pattern string
+	regexp  *regexp.Regexp
+	target  string
+	parts   []string
+}
+
+type replaceRuleConfig struct {
+	Pattern string
+	Target  string
 }
 
 func (r *replaceRule) rewrite(path string) *string {
@@ -24,12 +33,17 @@ func (r *replaceRule) rewrite(path string) *string {
 	return &newPath
 }
 
-func newReplaceRule(pattern string, target string) *replaceRule {
-	if strings.HasPrefix(pattern, "/") {
-		pattern = pattern[1:]
-	}
+func (r *replaceRule) String() string {
+	return fmt.Sprintf("[replace] %v -> %v", r.pattern, r.target)
+}
 
-	parts := strings.Split(pattern, "/")
+func newReplaceRule(pattern string, target string) *replaceRule {
+	var parts []string
+	if strings.HasPrefix(pattern, "/") {
+		parts = strings.Split(pattern[1:], "/")
+	} else {
+		parts = strings.Split(pattern, "/")
+	}
 
 	var regexpString string
 
@@ -46,8 +60,23 @@ func newReplaceRule(pattern string, target string) *replaceRule {
 	regexpString += `$`
 
 	return &replaceRule{
-		regexp: regexp.MustCompile(regexpString),
-		parts:  replaceParts,
-		target: target,
+		pattern: pattern,
+		regexp:  regexp.MustCompile(regexpString),
+		parts:   replaceParts,
+		target:  target,
 	}
+}
+
+func loadReplaceRulesFromConfig(r *rewriteServer) {
+	var rules []replaceRuleConfig
+	err := viper.UnmarshalKey("replace-rules", &rules)
+
+	if err != nil {
+		fmt.Printf("Could not parse replace-rules from config file: %s \n", err)
+		return
+	}
+	for _, rule := range rules {
+		r.appendRewriter(newReplaceRule(rule.Pattern, rule.Target))
+	}
+
 }

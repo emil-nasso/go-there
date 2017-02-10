@@ -8,10 +8,10 @@ import (
 
 func TestEmptyStaticRule(t *testing.T) {
 	assert := assert.New(t)
-	var rule staticRule
-	rule = staticRule{}
+	var rule StaticRule
+	rule = StaticRule{}
 	assert.Equal(*rule.rewrite(""), "")
 
-	rule = staticRule{From: "/non/matching"}
+	rule = StaticRule{From: "/non/matching"}
 	assert.Nil(rule.rewrite(""))
 }

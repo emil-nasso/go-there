@@ -18,5 +18,10 @@
          "pattern":"/g/{query}",
          "target":"http://www.google.com?query={query}"
       }
+   ],
+   "database-rewriters":[
+      {
+         "path":"db/rules.sqlite3"
+      }
    ]
 }

@@ -11,8 +11,8 @@ func TestStaticRoutes(t *testing.T) {
 
 	server := rewriteServer{
 		rewriters: []rewriter{
-			staticRule{From: "/hello", To: "/world"},
-			staticRule{From: "/tjenna", To: "/mannen"},
+			StaticRule{From: "/hello", To: "/world"},
+			StaticRule{From: "/tjenna", To: "/mannen"},
 		},
 	}
 

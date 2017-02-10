@@ -78,5 +78,4 @@ func loadReplaceRulesFromConfig(r *rewriteServer) {
 	for _, rule := range rules {
 		r.appendRewriter(newReplaceRule(rule.Pattern, rule.Target))
 	}
-
 }

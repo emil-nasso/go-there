@@ -14,12 +14,13 @@ type rewriter interface {
 
 func main() {
 	loadConfiguration()
-	rewriteServer := rewriteServer{}
-	loadStaticRulesFromConfig(&rewriteServer)
+	s := rewriteServer{}
+	loadStaticRulesFromConfig(&s)
+	loadReplaceRulesFromConfig(&s)
+	loadDatabaseRuleRewritersFromConfig(&s)
+	s.listRewriters()
 
-	rewriteServer.listRewriters()
-
-	http.HandleFunc("/", rewriteServer.ServeHTTP)
+	http.HandleFunc("/", s.ServeHTTP)
 	portNumber := viper.GetInt("app.port")
 	serverURI := fmt.Sprintf(":%v", portNumber)
 	fmt.Printf("Listening on %v", serverURI)
@@ -29,7 +30,7 @@ func main() {
 func loadConfiguration() {
 	viper.SetDefault("app.debug", false)
 	viper.SetDefault("app.port", "8080")
-	viper.SetDefault("static-rules", []staticRule{})
+	viper.SetDefault("static-rules", []StaticRule{})
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath("/etc/go-there/")

@@ -23,6 +23,10 @@ func newDatabaseRuleRewriter(filePath string) *databaseRuleRewriter {
 		panic("failed to connect database")
 	}
 
+	if viper.GetBool("app.debug") {
+		db.LogMode(true)
+	}
+
 	db.AutoMigrate(&StaticRule{})
 	//defer db.Close()
 	return &(databaseRuleRewriter{

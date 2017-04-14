@@ -26,6 +26,10 @@ func main() {
 	s.listRewriters()
 
 	r := gin.Default()
+	if viper.GetBool("app.debug") == false {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r.LoadHTMLFiles("landingpage.html")
 	r.Use(s.handleRedirect)
 	portNumber := viper.GetInt("app.port")

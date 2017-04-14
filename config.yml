@@ -1,0 +1,35 @@
+# Application configuration
+app:
+  # The `port` number the redirects are performed on. Should probably be 80, unless in development
+  port: 8000
+  # Show development/`debug`/verbose information
+  debug: true
+  # Relative path to the template that will be used to render landing pages
+  landingpagetemplate: landingpage.html
+# static-rules should be a list of static redirecters.
+# They each have three properties:
+# * `from`: the path to redirect from. Starting with a /. Ex: /example
+# * `to`: the full url to redirect to. Ex: http://www.example.com
+# * `landingpage`: if this is set to true, a landing page showing a link to the
+#   page at `to` will be rendered insted of a redirect being performed
+static-rules:
+  - from: "/g"
+    to: "http://www.google.com"
+    landingpage: true
+  - from: "/d"
+    to: "http://www.duckduckgo.com"
+# `replace-rules` are similar to `static-rules` but operate on a pattern in the url
+# This should also be a list.
+# Each item should have the following properties:
+# * `pattern`: the path to redirect from. Variables inside of { } will be saved
+#   and inserted into the variable with the same name in the target url
+# * `target`: the target url to redirect to. Variables will be insterted from the pattern
+replace-rules:
+  - pattern: "/g/{query}"
+    target: "http://www.google.com?query={query}"
+# A list of `database-rewriters`. Each has a path to a sqlite file.
+# The database will contain a table with rows representing static redirecters
+# If no database file is found at the path, one will be ceated and automatically,
+# migrated.
+database-rewriters:
+  - path: "db/rules.sqlite3"

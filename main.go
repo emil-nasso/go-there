@@ -2,13 +2,18 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/spf13/viper"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
+type rewriteResult struct {
+	url             string
+	showLandingPage bool
+}
+
 type rewriter interface {
-	rewrite(string) *string
+	rewrite(string) *rewriteResult
 	String() string
 }
 
@@ -20,11 +25,12 @@ func main() {
 	loadDatabaseRuleRewritersFromConfig(&s)
 	s.listRewriters()
 
-	http.HandleFunc("/", s.ServeHTTP)
+	r := gin.Default()
+	r.LoadHTMLFiles("landingpage.html")
+	r.Use(s.handleRedirect)
 	portNumber := viper.GetInt("app.port")
 	serverURI := fmt.Sprintf(":%v", portNumber)
-	fmt.Printf("Listening on %v", serverURI)
-	http.ListenAndServe(serverURI, nil)
+	r.Run(serverURI)
 }
 
 func loadConfiguration() {

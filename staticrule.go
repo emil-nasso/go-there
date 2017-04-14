@@ -10,19 +10,20 @@ import (
 // StaticRule - TODO
 type StaticRule struct {
 	gorm.Model
-	From string
-	To   string
+	From        string
+	To          string
+	LandingPage bool
 }
 
-func (r StaticRule) rewrite(path string) *string {
+func (r StaticRule) rewrite(path string) *rewriteResult {
 	if path == r.From {
-		return &r.To
+		return &rewriteResult{r.To, r.LandingPage}
 	}
 	return nil
 }
 
 func (r StaticRule) String() string {
-	return fmt.Sprintf("[static] %v -> %v", r.From, r.To)
+	return fmt.Sprintf("[static](%t) %v -> %v", r.LandingPage, r.From, r.To)
 }
 
 func loadStaticRulesFromConfig(r *rewriteServer) {

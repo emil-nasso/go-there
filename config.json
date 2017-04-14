@@ -6,11 +6,12 @@
    "static-rules":[
       {
          "from":"/g",
-         "to":"http://www.google.com"
+         "to":"http://www.google.com",
+         "landingpage":true
       },
       {
-         "from":"/af",
-         "to":"http://www.aftonbladet.se"
+         "from":"/d",
+         "to":"http://www.duckduckgo.com"
       }
    ],
    "replace-rules":[

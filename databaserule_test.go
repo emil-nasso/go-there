@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const TESTDBPATH = "/tmp/go-there-test.go"
+const TESTDBPATH = "/tmp/go-there-test.sqlite"
 
 func init() {
 	os.Remove(TESTDBPATH)
@@ -29,5 +29,5 @@ func TestAddRules(t *testing.T) {
 	assertStringOutput(t, 1, r)
 
 	assert.Nil(t, r.rewrite("/jajdjdjd"))
-	assert.Equal(t, "http://www.google.se", *r.rewrite("/test"))
+	assert.Equal(t, "http://www.google.se", r.rewrite("/test").url)
 }

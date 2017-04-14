@@ -35,13 +35,12 @@ func newDatabaseRuleRewriter(filePath string) *databaseRuleRewriter {
 	})
 }
 
-func (r databaseRuleRewriter) rewrite(path string) *string {
+func (r databaseRuleRewriter) rewrite(path string) *rewriteResult {
 	var rule StaticRule
 	if err := r.db.Where(&StaticRule{From: path}).First(&rule).Error; err != nil {
 		return nil
 	}
-	return &(rule.To)
-
+	return &rewriteResult{rule.To, false}
 }
 
 func (r databaseRuleRewriter) String() string {

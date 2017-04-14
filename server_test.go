@@ -18,6 +18,6 @@ func TestStaticRoutes(t *testing.T) {
 
 	assert.Nil(server.rewrite(""))
 	assert.Nil(server.rewrite("/some404"))
-	assert.Equal(*(server.rewrite("/hello")), "/world")
-	assert.Equal(*(server.rewrite("/tjenna")), "/mannen")
+	assert.Equal(server.rewrite("/hello").url, "/world")
+	assert.Equal(server.rewrite("/tjenna").url, "/mannen")
 }

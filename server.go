@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 type rewriteServer struct {
 	rewriters []rewriter
 }
 
-func (s *rewriteServer) rewrite(path string) *string {
+func (s *rewriteServer) rewrite(path string) *rewriteResult {
 	for _, rule := range s.rewriters {
 		if result := rule.rewrite(path); result != nil {
 			return result
@@ -18,17 +20,24 @@ func (s *rewriteServer) rewrite(path string) *string {
 	return nil
 }
 
+func (s *rewriteServer) Rewriters() *[]rewriter {
+	return &(s.rewriters)
+}
+
 func (s *rewriteServer) appendRewriter(r rewriter) {
 	s.rewriters = append(s.rewriters, r)
 }
 
-func (s *rewriteServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	target := s.rewrite(r.URL.Path)
-	if target == nil {
-		http.NotFound(w, r)
-	} else {
-		debug("Redirecting '%s' to '%s'", r.URL.Path, *target)
-		http.Redirect(w, r, *target, http.StatusPermanentRedirect)
+func (s *rewriteServer) handleRedirect(c *gin.Context) {
+	url := c.Request.URL.Path
+	target := s.rewrite(url)
+	if target != nil {
+		if target.showLandingPage {
+			c.HTML(http.StatusNotFound, "landingpage.html", gin.H{"url": target.url})
+		} else {
+			debug("Redirecting '%s' to '%s'", url, target.url)
+			c.Redirect(http.StatusFound, target.url)
+		}
 	}
 }
 

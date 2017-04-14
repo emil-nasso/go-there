@@ -10,7 +10,7 @@ func TestEmptyStaticRule(t *testing.T) {
 	assert := assert.New(t)
 	var rule StaticRule
 	rule = StaticRule{}
-	assert.Equal(*rule.rewrite(""), "")
+	assert.Equal(rule.rewrite("").url, "")
 
 	rule = StaticRule{From: "/non/matching"}
 	assert.Nil(rule.rewrite(""))

@@ -20,7 +20,7 @@ type replaceRuleConfig struct {
 	Target  string
 }
 
-func (r *replaceRule) rewrite(path string) *string {
+func (r *replaceRule) rewrite(path string) *rewriteResult {
 	found := r.regexp.FindAllStringSubmatch(path, -1)
 	if found == nil {
 		return nil
@@ -30,7 +30,7 @@ func (r *replaceRule) rewrite(path string) *string {
 		newPath = strings.Replace(newPath, "{"+replacePattern+"}", found[0][i+1], -1)
 	}
 
-	return &newPath
+	return &rewriteResult{newPath, false}
 }
 
 func (r *replaceRule) String() string {
